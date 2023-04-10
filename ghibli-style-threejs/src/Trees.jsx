@@ -1,20 +1,25 @@
 import React, { forwardRef, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Color, Vector3 } from "three";
-import { ToonShader } from "./ToonShader";
+import { GhibliShader } from "./GhibliShader";
 
 export const Trees = forwardRef((props, ref) => {
   const { nodes } = useGLTF("/trees.glb");
 
   const uniforms = useMemo(() => {
     return {
-      ...ToonShader.uniforms,
-      uBaseColor: { value: new Color("#49897C") },
-      uAmbientLightColor: { value: new Color("#050505") },
-      uDirLightColor: { value: new Color("white") },
-      uDirLightPos: { value: new Vector3(15, 15, 15) },
-      uLineColor1: { value: new Color("#808080") },
-      uLineColor2: { value: new Color("black") },
+      colorMap: {
+        value: [
+          new Color("#427062").convertLinearToSRGB(),
+          new Color("#33594E").convertLinearToSRGB(),
+          new Color("#234549").convertLinearToSRGB(),
+          new Color("#1E363F").convertLinearToSRGB(),
+        ],
+      },
+      brightnessThresholds: {
+        value: [0.9, 0.45, 0.001],
+      },
+      lightPosition: { value: new Vector3(15, 15, 15) },
     };
   }, []);
 
@@ -26,7 +31,11 @@ export const Trees = forwardRef((props, ref) => {
         geometry={nodes.Foliage.geometry}
         position={[0.33, -0.05, -0.68]}
       >
-        <shaderMaterial attach="material" {...ToonShader} uniforms={uniforms} />
+        <shaderMaterial
+          attach="material"
+          {...GhibliShader}
+          uniforms={uniforms}
+        />
       </mesh>
     </group>
   );
