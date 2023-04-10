@@ -1,19 +1,10 @@
 import React, { forwardRef, useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Color, DataTexture, RedFormat } from "three";
+import * as SimpleShader from "./SimpleShader";
 
 export const Trees = forwardRef((props, ref) => {
   const { nodes } = useGLTF("/trees.glb");
-  const toneMap = useMemo(() => {
-    const format = RedFormat;
-    const colors = new Uint8Array(4);
-    for (let c = 0; c <= colors.length; c++) {
-      colors[c] = (c / colors.length) * 256;
-    }
-    const gradientMap = new DataTexture(colors, colors.length, 1, format);
-    gradientMap.needsUpdate = true;
-    return gradientMap;
-  }, []);
 
   return (
     <group {...props} dispose={null} ref={ref}>
@@ -26,7 +17,7 @@ export const Trees = forwardRef((props, ref) => {
         {/* <meshStandardMaterial
           color={new Color("#33594e").convertLinearToSRGB()}
         /> */}
-        <meshToonMaterial gradientMap={toneMap} color={"#234549"} />
+        <shaderMaterial attach="material" {...SimpleShader} />
       </mesh>
     </group>
   );
