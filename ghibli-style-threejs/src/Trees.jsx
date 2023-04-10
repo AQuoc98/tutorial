@@ -1,8 +1,8 @@
-import React, { useMemo, useRef } from "react";
+import React, { forwardRef, useMemo, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Color, DataTexture, RedFormat } from "three";
 
-export function Trees(props) {
+export const Trees = forwardRef((props, ref) => {
   const { nodes } = useGLTF("/trees.glb");
   const toneMap = useMemo(() => {
     const format = RedFormat;
@@ -16,7 +16,7 @@ export function Trees(props) {
   }, []);
 
   return (
-    <group {...props} dispose={null}>
+    <group {...props} dispose={null} ref={ref}>
       <mesh
         castShadow
         receiveShadow
@@ -30,6 +30,6 @@ export function Trees(props) {
       </mesh>
     </group>
   );
-}
+});
 
 useGLTF.preload("/trees.glb");
